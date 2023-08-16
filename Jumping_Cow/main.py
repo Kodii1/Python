@@ -11,6 +11,8 @@ from scripts.load_images import load_image
 class Game():
     def __init__( self ):
         pygame.init()
+        pygame.display.set_caption('Jumping_Cow by Adrian Jarząb')
+
         self.font = pygame.font.SysFont('Segoe', 26)
         self.WIDHT = 800
         self.HEIGHT = 300
@@ -21,6 +23,8 @@ class Game():
 
         self.score_text = 0
         self.move = False
+
+        self.run_game = False
 
         self.assets = {
             'cow' : load_image( 'cow2.png' ),
@@ -33,10 +37,12 @@ class Game():
         self.fences = Fences ( self.speed , 4 )
 
         self.score = 0
+
     def score_count( self ):
-        if self.fences.fences[ 0 ].pos[ 0 ] < 0 and self.fences.fences[ 0 ].pos[ 0 ] > - self.speed:
-            self.score += 1
-            self.score_text = self.font.render('Score: ' + str(self.score), True, (255, 255, 255))
+        # if self.fences.fences[ 0 ].pos[ 0 ] < 0 and self.fences.fences[ 0 ].pos[ 0 ] > - self.speed:
+        #     self.score += 1
+        if  pygame.Rect( 0 , 237 , self.speed -1  , self.HEIGHT ).colliderect(pygame.Rect( self.fences.fences[ 0 ].pos[ 0 ] , self.fences.fences[ 0 ].pos[ 1 ] , 1 , self.HEIGHT )):
+            self.score += 1            
 
     def lose( self ):
         if self.cow.colision_area.colliderect(self.fences.fences[ 0 ].colision_area):
@@ -63,16 +69,14 @@ class Game():
 
     def render( self ):
         
-        pygame.display.set_caption('Jumping_Cow by Adrian Jarząb')
 
         self.screen.fill( ( 0, 0, 225 ) )
-        self.score_text = self.font.render('Score: ' + str(self.score), True, (255, 255, 255))        
+        self.score_text = self.font.render('Score: ' + str(self.score), True, (255, 255, 255))      #???   
         self.screen.blit ( self.assets['background'], ( 0, 0 ) )
         self.fences.render( self.assets['fence'], self.screen )
         
         self.cow.render()
 
-        # self.screen.blit ( self.assets['cow'], ( self.cow.pos ) )
         self.screen.blit(self.score_text, (10, 10))
         pygame.display.update()
 
@@ -80,25 +84,56 @@ class Game():
 
         pygame.time.delay( 50 )
 
-    def run( self ):
+    def menu( self ):
+        self.menu_text = self.font.render('Easy = 1 Medium = 2 Hard = 3', True, (0, 0, 0) )
+
+        self.screen.blit ( self.assets['background'], ( 0, 0 ) )
         
+        self.screen.blit(self.menu_text, (10, 10))
+        
+        self.cow.render()
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit( 0 )
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    self.speed = 15
+                    self.run_game = True
+
+                if event.key == pygame.K_2:
+                    self.speed = 20
+                    self.run_game = True
+
+                if event.key == pygame.K_3:
+                    self.speed = 25
+                    self.run_game = True
+
+    def run( self ):
         while True:
+            self.menu()
 
-            self.fences.get_new()
+            while self.run_game:
+                
 
-            self.cow.update( self.move )
+                self.fences.get_new()
 
-            self.fences.update()
+                self.cow.update( self.move )
 
-            self.fences.collision( self.assets['fence'].get_width() , self.assets['fence'].get_height() )
-            self.cow.body_update( self.assets['cow'].get_width() , self.assets['cow'].get_height() )
+                self.fences.update()
 
-            self.events()
+                self.fences.collision( self.assets['fence'].get_width() , self.assets['fence'].get_height() )
+                self.cow.body_update( self.assets['cow'].get_width() , self.assets['cow'].get_height() )
 
-            self.fences.del_old()
+                self.events()
 
-            self.lose()
-            self.score_count()
+                self.fences.del_old()
 
-            self.render()
+                self.lose()
+                self.score_count()
+
+                self.render()
 Game().run()

@@ -49,7 +49,7 @@ class Fences():
 
     def get_new( self ):
         if len ( self.fences ) == 2:
-            self.distans = self.fences[ 1 ].pos[ 0 ] + 500
+            self.distans = self.fences[ 1 ].pos[ 0 ] + 400
             for i in range( self.count ):
                 self.fences.append( Fence ( self.speed ,(  random.randrange( self.distans , self.distans + 100  ), 237 ) ) )
                 self.distans += 700
