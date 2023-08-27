@@ -39,10 +39,10 @@ class Game():
         self.score = 0
 
     def score_count( self ):
-        # if self.fences.fences[ 0 ].pos[ 0 ] < 0 and self.fences.fences[ 0 ].pos[ 0 ] > - self.speed:
-        #     self.score += 1
+
         if  pygame.Rect( 0 , 237 , self.speed -1  , self.HEIGHT ).colliderect(pygame.Rect( self.fences.fences[ 0 ].pos[ 0 ] , self.fences.fences[ 0 ].pos[ 1 ] , 1 , self.HEIGHT )):
             self.score += 1            
+            self.fences.del_old()
 
     def lose( self ):
         if self.cow.colision_area.colliderect(self.fences.fences[ 0 ].colision_area):
@@ -130,7 +130,6 @@ class Game():
 
                 self.events()
 
-                self.fences.del_old()
 
                 self.lose()
                 self.score_count()

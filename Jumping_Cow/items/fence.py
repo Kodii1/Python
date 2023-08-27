@@ -44,7 +44,9 @@ class Fences():
             fence.render( assets, screen )
 
     def del_old( self ):
-        self.fences = [fence for fence in self.fences if fence.pos[0] > -100]
+        # self.fences = [ fence for fence in self.fences if ??? ] #if fence.pos[ 0 ] > fence[ 0 ].pos[ 0 ]]
+        self.fences = [fence for index, fence in enumerate(self.fences) if index > 0]
+
         gc.collect()
 
     def get_new( self ):
